@@ -2,7 +2,7 @@ clear;
 clc;
 
 M = dlmread('AllMotionVectorCollcted.txt');
-err = dlmread('sumErr.txt');
+err = dlmread('sumMisclassifications.txt');
 
 [numVect, numComp]= size(M);
 
@@ -33,8 +33,8 @@ for i=1:numVect/2
     mit(:,i) = mit(mInd,i);
 end
 
-ohne = ohne(1:numVect/2,:);
-mit = mit(1:numVect/2,:);
+ohne = ohne(1:numVect/4,:);
+mit = mit(1:numVect/4,:);
 
 av0 = mean(ohne);
 av1 = mean(mit);
@@ -43,8 +43,10 @@ diff = av0-av1;
 
 avGes = (av0+av1)/2;
 
-motion1 = avGes+2*diff;
-motion2 = avGes-2*diff;
+alpha = 2;
+
+motion1 = avGes+alpha*diff;
+motion2 = avGes-alpha*diff;
 
 [p0_0,eigenpostures0,sinVal0] = getHampelmannParameters(motion1);
 [p0_5,eigenpostures5,sinVal5] = getHampelmannParameters(motion2);

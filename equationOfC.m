@@ -43,6 +43,8 @@ end
 misclassificationsMit = zeros(1,min(numVect,numComp));
 misclassificationsOhne = zeros(1,min(numVect,numComp));
 
+specificMisclassifications = zeros(numVect,numVect);
+
 for k=1:numVect/2
     if 1==k
        M_k=M(3:end,:);
@@ -70,15 +72,23 @@ for k=1:numVect/2
            if r_ki(j) < 0
                if r(2*k-2+j) > 0
                    misclassificationsMit(i) = misclassificationsMit(i)+1;
+                   specificMisclassifications(2*k-2+j,i) = 1;
                end
            else
                if r(2*k-2+j) < 0
                    misclassificationsOhne(i) = misclassificationsOhne(i)+1;
+                   specificMisclassifications(2*k-2+j,i) = 1;
                end  
            end
        end
     end
 end
+
+
+sumSpecMis = sum(specificMisclassifications');
+sumSpecMis = sumSpecMis';
+
+dlmwrite('sumMisclassifications.txt',sumSpecMis);
 
 hold all;
 grid on;
