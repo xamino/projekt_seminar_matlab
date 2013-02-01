@@ -81,6 +81,7 @@ for k=1:numVect/2
 end
 
 hold all;
+grid on;
 % plot(misclassificationsMit,'g-');
 % plot(misclassificationsOhne,'y-');
 plot(misclassificationsCompleteData,'b-');
