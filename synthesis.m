@@ -5,12 +5,17 @@ c = dlmread('classifier.txt');
 V = dlmread('eigenVectors.txt');
 [s,numEigenvectors]=size(V);
 average = dlmread('averageMotionVector.txt');
-% u = dlmread('uVector.txt');
-% U = ones(numEigenvectors,1)*u;
-% V = U'.*V;
+u = dlmread('uVector.txt');
 
-motion1 = average'+0.01*V*c;
-motion2 = average'-0.01*V*c;
+u = u(2:end);
+V = diag(u)*V;
+alpha = 10*u;
+%alpha=alpha';
+
+average = average.*u;
+
+motion1 = average'+alpha*V*c;
+motion2 = average'-alpha*V*c;
 
 [p0_0,eigenpostures0,sinVal0] = getHampelmannParameters(motion1');
 [p0_5,eigenpostures5,sinVal5] = getHampelmannParameters(motion2');
