@@ -5,9 +5,8 @@ clc;
 
 name = 'tamino';
 gewicht = '5';
-bewegung = 'Seilhuepfen';
-norm = 'normalize';
-% Seilhüpfen normalize Hampelmann
+bewegung = 'Hampelmann';
+norm = 'MovedToZeroSizeNormalized';
 
 pfad = [name bewegung '/'];
 
@@ -88,6 +87,6 @@ dlmwrite([pfad name 'MotionVectorCalc.txt'],motionVector);
 
 eigenwerte(LATENT,name,pfad);
 koeffizienten(SCORE,resultScore,name,pfad,numWav,numFrames);
-% animate(name,pfad,M,Zwischenergebnis,Ergebnis,numEigenvectors,numWav);
+animate(name,pfad,M,Zwischenergebnis,Ergebnis,numEigenvectors,numWav);
 
 % end

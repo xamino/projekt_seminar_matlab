@@ -9,7 +9,7 @@ u = dlmread('uVector.txt');
 
 u = u(2:end);
 V = diag(u)*V;
-alpha = 20*u;
+alpha = 30*u;
 %alpha=alpha';
 
 average = average.*u;
