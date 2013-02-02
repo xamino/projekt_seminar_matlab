@@ -6,8 +6,8 @@ figure('Name', ['Koeffizienten ' name],'NumberTitle','off','position',[150 0 100
 C = cell(size(s1,2),1);
 
 subplot(2,1,1);
-axis([-1.5 1.5 1 numFrames]);
 plot(s1(:,1));
+axis([1 numFrames -1.5 1.5]);
 grid on;
 title('Koeffizienten der Eigenvektoren im zeitlichen Verlauf');
 hold all;
@@ -23,6 +23,7 @@ hold off;
 
 subplot(2,1,2);
 plot(s2(:,1));
+axis([1 numFrames -1.5 1.5]);
 grid on;
 title(['Annäherung durch cos (jeweils ' int2str(numFreq) ' Sinuswelle(n))']);
 hold all;

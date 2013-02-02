@@ -2,7 +2,7 @@ clear;
 clc;
 
 % Liest den gesamten MotionVector ein
-name = 'AllMotionVectorCollcted';
+name = 'AllMotionVectorsHampelmannMovedToZeroSizeNormalized';
 M = dlmread([name '.txt']);
 B=M;
 R=M(:,1);
@@ -21,6 +21,5 @@ for i=2:spalten
     end
 end
 
-dlmwrite('rVector.txt',R);
-dlmwrite('uVector.txt',STDA);
-dlmwrite('stdUMotionVector.txt',M);
+dlmwrite('uVectorHampelmannMovedToZeroSizeNormalized.txt',STDA);
+dlmwrite('stdUMotionVectorHampelmannMovedToZeroSizeNormalized.txt',M);

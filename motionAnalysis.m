@@ -3,8 +3,8 @@
 clear;
 clc;
 
-name = 'tamino';
-gewicht = '5';
+name = 'thomas';
+gewicht = '0';
 bewegung = 'Hampelmann';
 norm = 'MovedToZeroSizeNormalized';
 
@@ -43,7 +43,8 @@ numWav = 1;
 [COEFF,SCORE,LATENT] = princomp(M); % Hauptkomponentenanlyse
 
 % fehler durch pca
-err = 100/sum(LATENT).*LATENT(1:numEigenvectors); % geht das auch einfacher? ^^
+err = zeros(2,numEigenvectors);
+err(1,:) = 100/sum(LATENT).*LATENT(1:numEigenvectors); % geht das auch einfacher? ^^
 
 p0 = mean(M(:,1:numComp)); % Durchschnittspose bestimmen
 
@@ -62,10 +63,10 @@ for i=1:numEigenvectors
    [fun,gof] = fit(x',SCORE(:,i),['sin' int2str(numWav)]);
    val(i,:) = coeffvalues(fun);
 
-   err(i) = err(i) * gof.rsquare; % error from fit
+   err(2,i) = gof.rsquare; % error from fit
 end
 
-% sum(err); enthält totalen error
+dlmwrite([pfad name 'Error.txt'],err);
 
 resultScore = zeros(size(SCORE));
 for i=1:numEigenvectors
@@ -85,8 +86,8 @@ motionVector = createHampelmannVector(p0,COEFF,val);
 
 dlmwrite([pfad name 'MotionVectorCalc.txt'],motionVector);
 
-eigenwerte(LATENT,name,pfad);
+% eigenwerte(LATENT,name,pfad);
 koeffizienten(SCORE,resultScore,name,pfad,numWav,numFrames);
-animate(name,pfad,M,Zwischenergebnis,Ergebnis,numEigenvectors,numWav);
+% animate(name,pfad,M,Zwischenergebnis,Ergebnis,numEigenvectors,numWav);
 
 % end

@@ -12,8 +12,8 @@ pfad = [name bewegung '/'];
 
 filename = [name bewegung];
 
-motionVector0 = dlmread([pfad filename '0normalizeMotionVectorCalc.txt']);
-motionVector5 = dlmread([pfad filename '5normalizeMotionVectorCalc.txt']);
+motionVector0 = dlmread([pfad filename '0MovedToZeroSizeNormalizedMotionVectorCalc.txt']);
+motionVector5 = dlmread([pfad filename '5MovedToZeroSizeNormalizedMotionVectorCalc.txt']);
 
 [p0_0,eigenpostures0,sinVal0] = getHampelmannParameters(motionVector0);
 [p0_5,eigenpostures5,sinVal5] = getHampelmannParameters(motionVector5);

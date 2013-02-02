@@ -2,7 +2,7 @@ clear;
 clc;
 
 % M = dlmread('AllMotionVectorCollcted.txt');
-M = dlmread('stdUMotionVector.txt');
+M = dlmread('stdUMotionVectorHampelmannMovedToZeroSizeNormalized.txt');
 
 r = M(:,1);
 r = 2*(r-0.5); %das hier sollte noch an anderer Stelle behoben werden. Statt 0 sollte -1 in r stehen
@@ -14,15 +14,15 @@ completeM = M(:,2:end);
 
 averageMotionVector = mean(completeM(:,:));
 
-dlmwrite('averageMotionVector.txt',averageMotionVector);
+dlmwrite('averageMotionVectorHampelmannMovedToZeroSizeNormalized.txt',averageMotionVector);
 
 % anstelle von cK=r verwende ich Kc=r, da die Matrizen transponiert sind
 % c = K\r;
 c = r'/K';
 c = c';
 
-dlmwrite('classifier.txt',c);
-dlmwrite('eigenVectors.txt',V); %V hat Eigenvektoren in jeder Spalte
+dlmwrite('classifierHampelmannMovedToZeroSizeNormalized.txt',c);
+dlmwrite('eigenVectorsHampelmannMovedToZeroSizeNormalized.txt',V); %V hat Eigenvektoren in jeder Spalte
 
 %Fehlklassifikationen mit komplettem Datensatz ermitteln
 misclassificationsCompleteData = zeros(1,min(numVect,numComp));
@@ -88,7 +88,7 @@ end
 sumSpecMis = sum(specificMisclassifications');
 sumSpecMis = sumSpecMis';
 
-dlmwrite('sumMisclassifications.txt',sumSpecMis);
+dlmwrite('sumMisclassificationsHampelmannMovedToZeroSizeNormalized.txt',sumSpecMis);
 
 hold all;
 grid on;

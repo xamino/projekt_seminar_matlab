@@ -1,8 +1,8 @@
 clear;
 clc;
 
-M = dlmread('AllMotionVectorCollcted.txt');
-err = dlmread('sumMisclassifications.txt');
+M = dlmread('AllMotionVectorsHampelmannMovedToZeroSizeNormalized.txt');
+err = dlmread('sumMisclassificationsHampelmannMovedToZeroSizeNormalized.txt');
 
 [numVect, numComp]= size(M);
 
@@ -43,7 +43,7 @@ diff = av0-av1;
 
 avGes = (av0+av1)/2;
 
-alpha = 2;
+alpha = 0.5;
 
 motion1 = avGes+alpha*diff;
 motion2 = avGes-alpha*diff;
@@ -101,7 +101,7 @@ for j=1:numFrames
 end
 
 % Film als .avi abspeichern
-writerObj = VideoWriter('synthese2.avi');
+writerObj = VideoWriter('synthese2HampelmannMovedToZeroSizeNormalized.avi');
 writerObj.FrameRate = 25;
 writerObj.Quality = 100;
 open(writerObj);

@@ -1,15 +1,15 @@
 clear;
 clc;
 
-c = dlmread('classifier.txt');
-V = dlmread('eigenVectors.txt');
+c = dlmread('classifierHampelmannMovedToZeroSizeNormalized.txt');
+V = dlmread('eigenVectorsHampelmannMovedToZeroSizeNormalized.txt');
 [s,numEigenvectors]=size(V);
-average = dlmread('averageMotionVector.txt');
-u = dlmread('uVector.txt');
+average = dlmread('averageMotionVectorHampelmannMovedToZeroSizeNormalized.txt');
+u = dlmread('uVectorHampelmannMovedToZeroSizeNormalized.txt');
 
 u = u(2:end);
 V = diag(u)*V;
-alpha = 30*u;
+alpha = 15*u;
 %alpha=alpha';
 
 average = average.*u;
@@ -70,7 +70,7 @@ for j=1:numFrames
 end
 
 % Film als .avi abspeichern
-writerObj = VideoWriter('synthese.avi');
+writerObj = VideoWriter('syntheseHampelmannMovedToZeroSizeNormalized.avi');
 writerObj.FrameRate = 25;
 writerObj.Quality = 100;
 open(writerObj);

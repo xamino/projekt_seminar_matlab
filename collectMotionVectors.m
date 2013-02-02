@@ -20,11 +20,11 @@ for i=1:(length(dirData))
                 dataname=data(j).name;
                 
                 % Den String suchen
-                findstring = strfind(dataname, 'Hampelmann0normalizeMotionVectorCalc');
+                findstring = strfind(dataname, 'Hampelmann0MovedToZeroSizeNormalizedMotionVectorCalc');
                 
                 if length(findstring)==0
                     % Kein Treffer
-                    findstring = strfind(dataname, 'Hampelmann5normalizeMotionVectorCalc');
+                    findstring = strfind(dataname, 'Hampelmann5MovedToZeroSizeNormalizedMotionVectorCalc');
                     
                 end
                     
@@ -62,7 +62,7 @@ for i=1:(length(dirData))
     else
     end
 end
-dlmwrite('AllMotionVectorCollcted.txt',MotionVectors);
+dlmwrite('AllMotionVectorsMovedToZeroSizeNormalized.txt',MotionVectors);
 
 
 
