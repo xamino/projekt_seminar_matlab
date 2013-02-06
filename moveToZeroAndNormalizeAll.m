@@ -2,7 +2,7 @@
 clear;
 clc;
 
-bewegung = 'Seilhuepfen';
+bewegung = 'Hampelmann';
 
 % Grundverzeichnis einlesen
 dirData = dir('.');
@@ -46,6 +46,9 @@ for i=1:(length(dirData))
                 dist1To10 = averagePosture(2)-averagePosture(29);
                 
                 M = M.*(0.6/dist1To10*ones(size(M)));
+                
+                averagePosture = mean(M);
+                dist1To10 = averagePosture(2)-averagePosture(29)
                 
                 dlmwrite([name '/' name g 'MovedToZeroSizeNormalized.txt'],M);
     
