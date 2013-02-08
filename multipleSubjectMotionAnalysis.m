@@ -1,81 +1,120 @@
+% erstellt fuer jeden Datensatz einen Motionvector und sammelt diese in
+% einer Matrix, außerdem wird der Komprimierungsfehler dokumentiert
 clear;
 clc;
 
-% names = {'taminoHampelmann0'; 'burkhardHampelmann0'; 'andreasHampelmann0'; 'johannesHampelmann0'
-%          'davidHampelmann0'; 'oemerHampelmann0'; 'olafHampelmann0'; 'thomasHampelmann0'; 'christianHampelmann0';
-%          'taminoHampelmann5'; 'burkhardHampelmann5'; 'andreasHampelmann5'; 'johannesHampelmann5'
-%          'davidHampelmann5'; 'oemerHampelmann5'; 'olafHampelmann5'; 'thomasHampelmann5'; 'christianHampelmann5'};
-     
-names = {'taminoSeilhüpfen0'; 'burkhardSeilhüpfen0'; 'andreasSeilhüpfen0'; 'johannesSeilhüpfen0'
-         'davidSeilhüpfen0'; 'sabrinaSeilhüpfen0'; 'olafSeilhüpfen0'; 'thomasSeilhüpfen0'; 'christianSeilhüpfen0'};
-         %'taminoSeilhüpfen5'; 'burkhardSeilhüpfen5'; 'andreasSeilhüpfen5'; 'johannesSeilhüpfen5';
-         %'davidSeilhüpfen5'; 'sabrinaSeilhüpfen5'; 'olafSeilhüpfen5'; 'thomasSeilhüpfen5'; 'christianSeilhüpfen5'};
+bewegung = 'Hampelmann';
 
-numNames = size(names,1);
+startFactor = 0;
+endFactor = 1;
 
-motionVectors = zeros(numNames,150);
+numEigenvectors = 2;
+% Anzahl der Eigenvektoren, die verwendet werden sollen
+% Definitionsbereich = {1,...,numComp}
 
-for i=1:numNames
-     motionVectors(i,:) = motionAnalysis(char(names(i)));
+numWav = 2;
+% Anzahl der Sinuswellen, die in der angenäherten Koeffizientenfunktion enthalten sein sollen
+% Definitionsbereich = {1,...,numFrames/2} (Fouriertransformation) oder {1,...,8} (fit)
+
+if numWav == 2
+    numW = '2Sin';
+else
+    numW = '';
 end
 
-%[V,K,LATENT] = princomp(motionVectors); % Hauptkomponentenanlyse
-
-numFrames = 300; %10s
-
-motionVectors(numNames+1,:) = mean(motionVectors);
-
-subject = numNames+1;
-
-val = zeros(2,3);
-val(1,:) = motionVectors(subject,145:147);
-val(2,:) = motionVectors(subject,148:150);
-
-score = zeros(numFrames,2);
-for i=1:2
-    reconst = zeros(1,numFrames);
-    for j=1:1
-        reconst = reconst + val(i,3*j-2)*sin((1:numFrames)*val(i,3*j-1)+val(i,3*j));
-    end
-    score(:,i) = reconst';
-end
-
-coeff = zeros(48,2);
-coeff(:,1) = motionVectors(subject,49:96);
-coeff(:,2) = motionVectors(subject,97:144);
-
-p0 = motionVectors(subject,1:48);
-P0 = ones(numFrames,1)*p0; % Matrix mit der Durchschnittspose in jeder Spalte
-
-M = P0 + score*coeff';
-
-for i=1:numFrames
-    row = M(i,:);
-    X = zeros(16,1);
-    Y = zeros(16,1);
-    Z = zeros(16,1);
-    for j=1:16
-        X(j) = row(((j-1)*3)+1);
-        Y(j) = row(((j-1)*3)+2);
-        Z(j) = row(((j-1)*3)+3);
-    end
-    plot(X,Y,'bo');
-    axis equal;
-    axis([-1.5 1.5 -1.5 1.5]);
+for n = 1:2
     
-    F(i) = getframe;
+    switch n
+        case 1
+            norm = 'MovedToZero';
+        otherwise
+            norm = 'MovedToZeroSizeNormalized';
+    end
+
+    % Leere Matrix
+    MotionVectors=[];
+
+    % Grundverzeichnis einlesen
+    dirData = dir('.');
+
+    for j=1:(length(dirData))
+
+        % Wenn es sich um einen Ordner handelt ->weitermachen
+        if (dirData(j).isdir)
+
+            name = dirData(j).name;
+
+            %entweder Hampelmann oder Seilhuepfen
+            findstring = strfind(name, bewegung);
+            if ~isempty(findstring)
+            % gewuenschte Bewegung
+                
+                % Fuer mit und ohne Gewicht
+                for g = [0,5]
+                    M = dlmread([name '/' name int2str(g) norm '.txt']);
+
+                    M = M(end*startFactor+1:end*endFactor,:);
+                    % Weglassen von Frames
+
+                    [numFrames, numComp]= size(M);
+                    %numComp ist die Anzahl der Dimensionen der Vektoren, die eine einzelne Pose beschreiben
+                    %numFrames ist die Anzahl der Posen/Frames aus den Testdaten
+
+                    [COEFF,SCORE,LATENT] = princomp(M); % Hauptkomponentenanlyse
+
+                    % fehler durch pca
+                    err = zeros(2,numEigenvectors);
+                    err(1,:) = 100/sum(LATENT).*LATENT(1:numEigenvectors);
+
+
+                    p0 = mean(M(:,1:numComp)); % Durchschnittspose bestimmen
+
+                    SCORE = SCORE(:,1:numEigenvectors); % Weglassen der nicht benötigten Koeffizienten
+                    COEFF = COEFF(:,1:numEigenvectors); % Weglassen der nicht benötigten Eigenvektoren
+
+                    val = zeros(numEigenvectors, numWav*3);
+
+                    x = 1:numFrames;
+
+                    for i=1:numEigenvectors
+                       [fun,gof] = fit(x',SCORE(:,i),['sin' int2str(numWav)]);
+                       val(i,:) = coeffvalues(fun);
+
+                       err(2,i) = gof.rsquare; % error caused by fit
+                    end
+                    
+                    if numWav == 1 || 0.03 > max([abs(val(1,2)/(val(1,5)/2)-1) abs(val(1,2)/(val(2,2)/2)-1) abs(val(1,2)/val(2,5)-1)])
+                        dlmwrite([name '/' name int2str(g) numW norm 'Error.txt'],err);
+
+                        if strcmp(bewegung,'Hampelmann')
+                            if numWav == 1
+                                motionVector = createHampelmannVector(p0,COEFF,val);
+                            else
+                                motionVector = createHampelmannVector2(p0,COEFF,val);
+                            end
+                        end
+
+                        dlmwrite([name '/' name int2str(g) numW norm 'MotionVectorCalc.txt'],motionVector);
+                        
+                        if g == 0
+                            motionVector0 = [0 motionVector];
+                        else
+                            motionVector5 = [1 motionVector];
+                            if size(MotionVectors,1)==0
+                                MotionVectors=motionVector0;
+                            else
+                                % ...und an bisherige Datei anhängen
+                                MotionVectors= vertcat(MotionVectors,motionVector0);
+                            end
+                            MotionVectors= vertcat(MotionVectors,motionVector5);
+                        end
+                    else
+                        ['keine akzeptable Anpassung der Sinuswerte bei ' name]
+                        break;
+                    end
+                end
+            end
+        end
+    end
+    dlmwrite(['AllMotionVectors' bewegung numW norm '.txt'],MotionVectors);
 end
-
-% Film als .avi abspeichern
-writerObj = VideoWriter('motionVectorSeilhuepfen0.avi');
-writerObj.FrameRate = 30;
-writerObj.Quality = 100;
-open(writerObj);
-
-for k = 1:numFrames
-   writeVideo(writerObj,F(k));
-end
-
-close(writerObj);
-
-plot(0);

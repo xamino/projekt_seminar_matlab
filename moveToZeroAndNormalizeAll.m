@@ -22,6 +22,9 @@ for i=1:(length(dirData))
             % Fuer mit und ohne Gewicht
             for g = ['0','5']
                 M = dlmread([name '/' name g '.txt']);
+                
+                M = M(1:end-1,:);
+                %Weglassen der letzten Zeile, da nicht intakt
     
                 [numFrames, numComp]= size(M);
                 for f=1:numFrames
@@ -37,18 +40,31 @@ for i=1:(length(dirData))
                     end
 
                 end
+                
+                
+                Y = zeros(numFrames,numComp/3);
+                %Matrix mit nur Y-Eintraegen
+                for j = 2:3:numComp
+                    Y(:,(j+1)/3) = M(:,j);
+                end
+                
+                minY = min(Y(:));
+                
+                % Datensatz so nach oben verschieben, dass 0 der Boden ist
+%                 for j = 2:3:numComp
+%                     M(:,j) = M(:,j) - ones(numFrames,1)*minY;
+%                 end
 
                 dlmwrite([name '/' name g 'MovedToZero.txt'],M);
                 
                 averagePosture = mean(M);
                 
-                %durchschnittlicher Abstand zwischen Kopf(1) und Huefte(10)
-                dist1To10 = averagePosture(2)-averagePosture(29);
+                if g == '0'
+                    %durchschnittlicher Abstand zwischen Kopf(1) und Huefte(10)
+                    dist1To10 = averagePosture(2)-averagePosture(29);
+                end
                 
                 M = M.*(0.6/dist1To10*ones(size(M)));
-                
-                averagePosture = mean(M);
-                dist1To10 = averagePosture(2)-averagePosture(29)
                 
                 dlmwrite([name '/' name g 'MovedToZeroSizeNormalized.txt'],M);
     

@@ -3,23 +3,32 @@
 clear;
 clc;
 
-name = 'thomas';
-gewicht = '0';
+name = 'olaf';
+gewicht = '5';
 bewegung = 'Hampelmann';
+% norm = 'MovedToZero';
 norm = 'MovedToZeroSizeNormalized';
 
-pfad = [name bewegung '/'];
+numWav = 2;
+% Anzahl der Sinuswellen, die in der angenäherten Koeffizientenfunktion enthalten sein sollen
+% Definitionsbereich = {1,...,numFrames/2} (Fouriertransformation) oder {1,...,8} (fit)
 
+pfad = [name bewegung '/'];
+name_ = name;
 name = [name bewegung gewicht norm];
 
 M = dlmread([pfad name '.txt']);
 % Matrix der erhobenen Daten. Zeilen: zeitlich aufeinanderfolgende Posen
 
-startFactor = 0;
-endFactor = 1;
-% name = [name '_10_zyk'];
+if numWav == 1
+    startFactor = 0;
+    endFactor = 1;
+else
+    startFactor = 0;
+    endFactor = 1;
+end
 
-M = M(end*startFactor+1:(end-1)*endFactor,:); % Weglassen der letzten Zeile, da nicht intakt
+M = M(end*startFactor+1:end*endFactor,:); % Weglassen von Frames
 
 % handr = M(:,23);
 % handl = M(:,20);
@@ -35,10 +44,6 @@ M = M(end*startFactor+1:(end-1)*endFactor,:); % Weglassen der letzten Zeile, da 
 numEigenvectors = 2;
 % Anzahl der Eigenvektoren, die verwendet werden sollen
 % Definitionsbereich = {1,...,numComp}
-
-numWav = 1;
-% Anzahl der Sinuswellen, die in der angenäherten Koeffizientenfunktion enthalten sein sollen
-% Definitionsbereich = {1,...,numFrames/2} (Fouriertransformation) oder {1,...,8} (fit)
  
 [COEFF,SCORE,LATENT] = princomp(M); % Hauptkomponentenanlyse
 
@@ -82,12 +87,24 @@ Zwischenergebnis = P0 + SCORE*COEFF';
  
 Ergebnis = P0 + resultScore*COEFF';
 
-motionVector = createHampelmannVector(p0,COEFF,val);
+if strcmp(bewegung,'Hampelmann')
+    if numWav == 1
+        motionVector = createHampelmannVector(p0,COEFF,val);
+    else
+        motionVector = createHampelmannVector2(p0,COEFF,val);
+    end
+end
 
-dlmwrite([pfad name 'MotionVectorCalc.txt'],motionVector);
+if numWav == 1
+    numW = '';
+else
+    numW = '2Sin';
+end
 
-% eigenwerte(LATENT,name,pfad);
+dlmwrite([pfad name_ bewegung gewicht numW norm 'MotionVectorCalc.txt'],motionVector);
+
+eigenwerte(LATENT,name,pfad);
 koeffizienten(SCORE,resultScore,name,pfad,numWav,numFrames);
-% animate(name,pfad,M,Zwischenergebnis,Ergebnis,numEigenvectors,numWav);
+animate(name,pfad,M,Zwischenergebnis,Ergebnis,numEigenvectors,numWav);
 
 % end

@@ -2,7 +2,12 @@ clear;
 clc;
 
 % M = dlmread('AllMotionVectorCollcted.txt');
-M = dlmread('stdUMotionVectorHampelmannMovedToZeroSizeNormalized.txt');
+
+bewegung = 'Hampelmann2Sin';
+% norm = 'MovedToZeroSizeNormalized';
+norm = 'MovedToZero';
+
+M = dlmread(['stdUMotionVector' bewegung norm '.txt']);
 
 r = M(:,1);
 r = 2*(r-0.5); %das hier sollte noch an anderer Stelle behoben werden. Statt 0 sollte -1 in r stehen
@@ -14,15 +19,15 @@ completeM = M(:,2:end);
 
 averageMotionVector = mean(completeM(:,:));
 
-dlmwrite('averageMotionVectorHampelmannMovedToZeroSizeNormalized.txt',averageMotionVector);
+dlmwrite(['averageMotionVector' bewegung norm '.txt'],averageMotionVector);
 
 % anstelle von cK=r verwende ich Kc=r, da die Matrizen transponiert sind
 % c = K\r;
 c = r'/K';
 c = c';
 
-dlmwrite('classifierHampelmannMovedToZeroSizeNormalized.txt',c);
-dlmwrite('eigenVectorsHampelmannMovedToZeroSizeNormalized.txt',V); %V hat Eigenvektoren in jeder Spalte
+dlmwrite(['classifier' bewegung norm '.txt'],c);
+dlmwrite(['eigenVectors' bewegung norm '.txt'],V); %V hat Eigenvektoren in jeder Spalte
 
 %Fehlklassifikationen mit komplettem Datensatz ermitteln
 misclassificationsCompleteData = zeros(1,min(numVect,numComp));
@@ -88,12 +93,15 @@ end
 sumSpecMis = sum(specificMisclassifications');
 sumSpecMis = sumSpecMis';
 
-dlmwrite('sumMisclassificationsHampelmannMovedToZeroSizeNormalized.txt',sumSpecMis);
+dlmwrite(['sumMisclassifications' bewegung norm '.txt'],sumSpecMis);
 
 hold all;
 grid on;
+axis([0 numVect 0 50])
+xlabel('Anzahl der verwendeten Hauptkomponenten')
+ylabel('Anzahl der Fehlklassifikationen in Prozent')
 % plot(misclassificationsMit,'g-');
 % plot(misclassificationsOhne,'y-');
-plot(misclassificationsCompleteData,'b-');
-plot(misclassificationsMit+misclassificationsOhne,'r-');
+plot(misclassificationsCompleteData/numVect*100,'b-');
+plot((misclassificationsMit+misclassificationsOhne)/numVect*100,'r-');
 hold off;

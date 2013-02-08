@@ -33,8 +33,8 @@ for i=1:numVect/2
     mit(:,i) = mit(mInd,i);
 end
 
-ohne = ohne(1:numVect/4,:);
-mit = mit(1:numVect/4,:);
+% ohne = ohne(1:numVect/2,:);
+% mit = mit(1:numVect/2,:);
 
 av0 = mean(ohne);
 av1 = mean(mit);
@@ -43,7 +43,7 @@ diff = av0-av1;
 
 avGes = (av0+av1)/2;
 
-alpha = 0.5;
+alpha = 3;
 
 motion1 = avGes+alpha*diff;
 motion2 = avGes-alpha*diff;
@@ -94,7 +94,7 @@ for j=1:numFrames
     plot(X0,Y0,'bo');
     hold on;
     axis equal;
-    axis([-1 3 -1.2 1.5]);
+    axis([-1 3 0 2.5]);
     plot(X5+2,Y5,'bo');
     hold off;
     F(j)=getframe;
