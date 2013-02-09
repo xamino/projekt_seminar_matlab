@@ -1,17 +1,21 @@
 clc;
 clear;
 
-name = 'oemer';
+name = 'eda';
 bewegung = 'Hampelmann';
-norm = 'MovedToZeroSizeNormalized';
-% norm = 'MovedToZero';
+% norm = 'MovedToZeroSizeNormalized';
+norm = 'MovedToZero';
 
 numWav = 2;
 
 if numWav == 2
     numW = '2Sin';
 else
-    numW = '';
+    if numWav == 1
+        numW = '';
+    else
+        numW = '2_1Sin';
+    end
 end
 
 figure('position',[50 50 800 600],'Name',[name ' ' bewegung ' Vergleich mit/ohne Gewichtsweste'],'NumberTitle','off');

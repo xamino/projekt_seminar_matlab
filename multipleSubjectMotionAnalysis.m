@@ -12,14 +12,20 @@ numEigenvectors = 2;
 % Anzahl der Eigenvektoren, die verwendet werden sollen
 % Definitionsbereich = {1,...,numComp}
 
-numWav = 2;
+numWav = 1.5;
 % Anzahl der Sinuswellen, die in der angenäherten Koeffizientenfunktion enthalten sein sollen
-% Definitionsbereich = {1,...,numFrames/2} (Fouriertransformation) oder {1,...,8} (fit)
+% 1.5 soll hierbei bedeuten, dass bei den Koeffizienten des ersten
+% Eigenvektors 2 Sinuswellen benutzt werden, bei denen des zweiten jedoch
+% nur eine
 
 if numWav == 2
     numW = '2Sin';
 else
-    numW = '';
+    if numWav == 1.5
+        numW = '2_1Sin';
+    else
+        numW = '';
+    end
 end
 
 for n = 1:2
@@ -72,25 +78,35 @@ for n = 1:2
                     SCORE = SCORE(:,1:numEigenvectors); % Weglassen der nicht benötigten Koeffizienten
                     COEFF = COEFF(:,1:numEigenvectors); % Weglassen der nicht benötigten Eigenvektoren
 
-                    val = zeros(numEigenvectors, numWav*3);
+                    val = zeros(numEigenvectors, 3*ceil(numWav));
 
                     x = 1:numFrames;
 
                     for i=1:numEigenvectors
-                       [fun,gof] = fit(x',SCORE(:,i),['sin' int2str(numWav)]);
-                       val(i,:) = coeffvalues(fun);
+                        if numWav == 1.5
+                            numSin = 3-i;
+                        else
+                            numSin = numWav;
+                        end
+                       [fun,gof] = fit(x',SCORE(:,i),['sin' int2str(numSin)]);
+                       val(i,1:numSin*3) = coeffvalues(fun);
 
                        err(2,i) = gof.rsquare; % error caused by fit
                     end
                     
-                    if numWav == 1 || 0.03 > max([abs(val(1,2)/(val(1,5)/2)-1) abs(val(1,2)/(val(2,2)/2)-1) abs(val(1,2)/val(2,5)-1)])
+                    if numWav == 1 || (numWav == 2 && 0.03 > max([abs(val(1,2)/(val(1,5)/2)-1) abs(val(1,2)/(val(2,2)/2)-1) abs(val(1,2)/val(2,5)-1)]))...
+                            || (numWav == 1.5 && 0.03 > max([abs(val(1,2)/(val(1,5)/2)-1) abs(val(1,2)/(val(2,2)/2)-1)]))
                         dlmwrite([name '/' name int2str(g) numW norm 'Error.txt'],err);
 
                         if strcmp(bewegung,'Hampelmann')
                             if numWav == 1
                                 motionVector = createHampelmannVector(p0,COEFF,val);
                             else
-                                motionVector = createHampelmannVector2(p0,COEFF,val);
+                                if numWav == 2
+                                    motionVector = createHampelmannVector2(p0,COEFF,val);
+                                else
+                                    motionVector = createHampelmannVector2_1(p0,COEFF,val);
+                                end
                             end
                         end
 

@@ -1,7 +1,7 @@
 clear;
 clc;
 
-bewegung = 'Hampelmann2Sin';
+bewegung = 'Hampelmann2_1Sin';
 
 for n = 1:2
     

@@ -2,8 +2,9 @@ clear;
 clc;
 
 bewegung = 'Hampelmann';
-norm = 'MovedToZeroSizeNormalized';
-% norm = 'MovedToZero';
+numWav = 2;
+% norm = 'MovedToZeroSizeNormalized';
+norm = 'MovedToZero';
 
 c = dlmread(['classifier' bewegung norm '.txt']);
 V = dlmread(['eigenVectors' bewegung norm '.txt']);
@@ -13,7 +14,7 @@ u = dlmread(['uVector' bewegung norm '.txt']);
 
 u = u(2:end);
 V = diag(u)*V;
-alpha = 1*u;
+alpha = 0*u;
 %alpha=alpha';
 
 average = average.*u;

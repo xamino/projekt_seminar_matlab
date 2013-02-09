@@ -3,11 +3,13 @@ clc;
 
 % M = dlmread('AllMotionVectorCollcted.txt');
 
-bewegung = 'Hampelmann2Sin';
+bewegung = 'Hampelmann2_1Sin';
 % norm = 'MovedToZeroSizeNormalized';
 norm = 'MovedToZero';
 
 M = dlmread(['stdUMotionVector' bewegung norm '.txt']);
+
+% M = M(7:24,:);
 
 r = M(:,1);
 r = 2*(r-0.5); %das hier sollte noch an anderer Stelle behoben werden. Statt 0 sollte -1 in r stehen

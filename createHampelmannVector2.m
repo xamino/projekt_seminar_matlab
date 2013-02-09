@@ -7,5 +7,9 @@ function hampelmannVector = createHampelmannVector2(p0,eigenpostures,sinValues)
     amplitudes = [sinValues(:,1); sinValues(:,4)];
     frequency = sinValues(1,2);
     phases = [sinValues(:,3); sinValues(:,6)];
-    hampelmannVector = [p0 eig1' eig2' amplitudes' frequency phases'];
+    phases = phases';
+    phases(2) = phases(2) - 2*phases(1);
+    phases(3) = phases(3) - 2*phases(1);
+    phases(4) = phases(4) - phases(1);
+    hampelmannVector = [p0 eig1' eig2' amplitudes' frequency phases(2:4)];
 end
