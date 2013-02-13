@@ -2,30 +2,51 @@ clear;
 clc;
 
 bewegung = 'Hampelmann';
-numWav = 2;
 % norm = 'MovedToZeroSizeNormalized';
 norm = 'MovedToZero';
 
-c = dlmread(['classifier' bewegung norm '.txt']);
-V = dlmread(['eigenVectors' bewegung norm '.txt']);
+numWav = 2;
+if numWav == 2
+    numW = '2Sin';
+else
+    if numWav == 1
+        numW = '';
+    else
+        numW = '2_1Sin';
+    end
+end
+
+c = dlmread(['classifier' bewegung numW norm '.txt']);
+V = dlmread(['eigenVectors' bewegung numW norm '.txt']);
 [s,numEigenvectors]=size(V);
-average = dlmread(['averageMotionVector' bewegung norm '.txt']);
-u = dlmread(['uVector' bewegung norm '.txt']);
+average = dlmread(['averageMotionVector' bewegung numW norm '.txt']);
+u = dlmread(['uVector' bewegung numW norm '.txt']);
 
-u = u(2:end);
 V = diag(u)*V;
-alpha = 0*u;
-%alpha=alpha';
+alpha = 0.3*u;
 
-average = average.*u;
-
-motion1 = average'+alpha*V*c;
+motion1 = average'+(alpha*V*c);
 motion2 = average'-alpha*V*c;
 
-[p0_0,eigenpostures0,sinVal0] = getHampelmannParameters(motion1');
-[p0_5,eigenpostures5,sinVal5] = getHampelmannParameters(motion2');
+% frequenz bei beiden gleich setzen
+freqInd = 140+numWav*2-1;
+motion1(freqInd) = average(freqInd);
+motion2(freqInd) = average(freqInd);
 
-numFrames = 300;
+if numWav == 1
+    [p0_0,eigenpostures0,sinVal0] = getHampelmannParameters(motion1');
+    [p0_5,eigenpostures5,sinVal5] = getHampelmannParameters(motion2');
+else
+    if numWav == 2
+        [p0_0,eigenpostures0,sinVal0] = getHampelmannParameters2(motion1');
+        [p0_5,eigenpostures5,sinVal5] = getHampelmannParameters2(motion2');
+    else
+        [p0_0,eigenpostures0,sinVal0] = getHampelmannParameters2_1(motion1');
+        [p0_5,eigenpostures5,sinVal5] = getHampelmannParameters2_1(motion2');
+    end
+end
+
+numFrames = 700;
 
 resultScore0 = zeros(numFrames,2);
 resultScore5 = zeros(numFrames,2);
@@ -51,6 +72,35 @@ P0_5 = ones(numFrames,1)*p0_5;
 
 motion0 = P0_0 + resultScore0*eigenpostures0';
 motion5 = P0_5 + resultScore5*eigenpostures5';
+
+m = motion0;
+for i=1:numFrames
+   xDiff=0-m(i,25);
+   zDiff=0-m(i,27);
+   for j=1:3:48
+        if j ~= 28
+            % Sämtliche weiteren Werte des Frames werden angepasst
+            m(i,j)=m(i,j)+xDiff;
+            m(i,j+2)=m(i,j+2)+zDiff;
+        end
+   end
+end
+motion0 = m;
+
+m = motion5;
+for i=1:numFrames
+   xDiff=0-m(i,25);
+   zDiff=0-m(i,27);
+   for j=1:3:48
+        if j ~= 28
+            % Sämtliche weiteren Werte des Frames werden angepasst
+            m(i,j)=m(i,j)+xDiff;
+            m(i,j+2)=m(i,j+2)+zDiff;
+        end
+   end
+end
+motion5 = m;
+
 
 for j=1:numFrames
     row0 = motion0(j,:);

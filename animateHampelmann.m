@@ -6,7 +6,7 @@ bewegung = 'Hampelmann';
 % norm = 'MovedToZeroSizeNormalized';
 norm = 'MovedToZero';
 
-numWav = 2;
+numWav = 1;
 
 if numWav == 2
     numW = '2Sin';
@@ -33,12 +33,19 @@ motionVector0 = dlmread([pfad filename '0' numW norm 'MotionVectorCalc.txt']);
 
 motionVector5 = dlmread([pfad filename '5' numW norm 'MotionVectorCalc.txt']);
 
+% motionVector5 = dlmread(['averageMotionVectorHampelmann' numW 'MovedToZero.txt']);
+
 if numWav == 1
     [p0_0,eigenpostures0,sinVal0] = getHampelmannParameters(motionVector0);
     [p0_5,eigenpostures5,sinVal5] = getHampelmannParameters(motionVector5);
 else
-    [p0_0,eigenpostures0,sinVal0] = getHampelmannParameters2(motionVector0);
-    [p0_5,eigenpostures5,sinVal5] = getHampelmannParameters2(motionVector5);
+    if numWav == 2
+        [p0_0,eigenpostures0,sinVal0] = getHampelmannParameters2(motionVector0);
+        [p0_5,eigenpostures5,sinVal5] = getHampelmannParameters2(motionVector5);
+    else
+        [p0_0,eigenpostures0,sinVal0] = getHampelmannParameters2_1(motionVector0);
+        [p0_5,eigenpostures5,sinVal5] = getHampelmannParameters2_1(motionVector5);
+    end
 end
 
 resultScore0 = zeros(numFrames,2);

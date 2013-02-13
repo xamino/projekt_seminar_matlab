@@ -3,13 +3,13 @@
 clear;
 clc;
 
-name = 'olaf';
-gewicht = '5';
-bewegung = 'Hampelmann';
-% norm = 'MovedToZero';
-norm = 'MovedToZeroSizeNormalized';
+name = 'matthias';
+gewicht = '0';
+bewegung = 'Seilhuepfen';
+norm = 'MovedToZero';
+% norm = 'MovedToZeroSizeNormalized';
 
-numWav = 2;
+numWav = 4;
 % Anzahl der Sinuswellen, die in der angenäherten Koeffizientenfunktion enthalten sein sollen
 % Definitionsbereich = {1,...,numFrames/2} (Fouriertransformation) oder {1,...,8} (fit)
 
@@ -93,6 +93,8 @@ if strcmp(bewegung,'Hampelmann')
     else
         motionVector = createHampelmannVector2(p0,COEFF,val);
     end
+else
+    
 end
 
 if numWav == 1
