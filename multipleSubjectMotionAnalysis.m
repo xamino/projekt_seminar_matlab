@@ -96,6 +96,7 @@ for n = 1:2
                     
                     if numWav == 1 || (numWav == 2 && 0.03 > max([abs(val(1,2)/(val(1,5)/2)-1) abs(val(1,2)/(val(2,2)/2)-1) abs(val(1,2)/val(2,5)-1)]))...
                             || (numWav == 1.5 && 0.03 > max([abs(val(1,2)/(val(1,5)/2)-1) abs(val(1,2)/(val(2,2)/2)-1)]))
+                        
                         dlmwrite([name '/' name int2str(g) numW norm 'Error.txt'],err);
 
                         if strcmp(bewegung,'Hampelmann')
