@@ -5,7 +5,7 @@ bewegung = 'Hampelmann';
 % norm = 'MovedToZeroSizeNormalized';
 norm = 'MovedToZero';
 
-numWav = 1.5;
+numWav = 2;
 
 if strcmp(bewegung,'Seilhuepfen')
     numWav = 1;
@@ -27,12 +27,10 @@ V = dlmread(['eigenVectors' bewegung numW norm '.txt']);
 average = dlmread(['averageMotionVector' bewegung numW norm '.txt']);
 u = dlmread(['uVector' bewegung numW norm '.txt']);
 
-alpha = 50*u;
-V = diag(alpha)*V;
-synth = V*c;
+alpha = 70;
 
-motion1 = average' + synth;
-motion2 = average' - synth;
+motion1 = average' + diag(alpha*u)*V*c;
+motion2 = average' + diag(-alpha*u)*V*c;
 
 % frequenz bei beiden gleich setzen
 % if strcmp(bewegung,'Hampelmann')
