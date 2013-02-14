@@ -3,13 +3,13 @@
 clear;
 clc;
 
-name = 'matthias';
+name = 'chekib';
 gewicht = '0';
 bewegung = 'Seilhuepfen';
 norm = 'MovedToZero';
 % norm = 'MovedToZeroSizeNormalized';
 
-numWav = 4;
+numWav = 1;
 % Anzahl der Sinuswellen, die in der angenäherten Koeffizientenfunktion enthalten sein sollen
 % Definitionsbereich = {1,...,numFrames/2} (Fouriertransformation) oder {1,...,8} (fit)
 
@@ -20,7 +20,7 @@ name = [name bewegung gewicht norm];
 M = dlmread([pfad name '.txt']);
 % Matrix der erhobenen Daten. Zeilen: zeitlich aufeinanderfolgende Posen
 
-if numWav == 1
+if strcmp(bewegung,'Seilhuepfen');
     startFactor = 0;
     endFactor = 1;
 else
@@ -41,7 +41,7 @@ M = M(end*startFactor+1:end*endFactor,:); % Weglassen von Frames
 %numComp ist die Anzahl der Dimensionen der Vektoren, die eine einzelne Pose beschreiben
 %numFrames ist die Anzahl der Posen/Frames aus den Testdaten
 
-numEigenvectors = 2;
+numEigenvectors = 3;
 % Anzahl der Eigenvektoren, die verwendet werden sollen
 % Definitionsbereich = {1,...,numComp}
  
@@ -103,7 +103,7 @@ else
     numW = '2Sin';
 end
 
-dlmwrite([pfad name_ bewegung gewicht numW norm 'MotionVectorCalc.txt'],motionVector);
+% dlmwrite([pfad name_ bewegung gewicht numW norm 'MotionVectorCalc.txt'],motionVector);
 
 eigenwerte(LATENT,name,pfad);
 koeffizienten(SCORE,resultScore,name,pfad,numWav,numFrames);

@@ -2,7 +2,7 @@
 clear;
 clc;
 
-bewegung = 'Hampelmann';
+bewegung = 'Seilhuepfen';
 
 % Grundverzeichnis einlesen
 dirData = dir('.');

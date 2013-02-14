@@ -5,7 +5,12 @@ bewegung = 'Hampelmann';
 % norm = 'MovedToZeroSizeNormalized';
 norm = 'MovedToZero';
 
-numWav = 2;
+numWav = 1.5;
+
+if strcmp(bewegung,'Seilhuepfen')
+    numWav = 1;
+end
+
 if numWav == 2
     numW = '2Sin';
 else
@@ -22,28 +27,39 @@ V = dlmread(['eigenVectors' bewegung numW norm '.txt']);
 average = dlmread(['averageMotionVector' bewegung numW norm '.txt']);
 u = dlmread(['uVector' bewegung numW norm '.txt']);
 
-V = diag(u)*V;
-alpha = 0.3*u;
+alpha = 50*u;
+V = diag(alpha)*V;
+synth = V*c;
 
-motion1 = average'+(alpha*V*c);
-motion2 = average'-alpha*V*c;
+motion1 = average' + synth;
+motion2 = average' - synth;
 
 % frequenz bei beiden gleich setzen
-freqInd = 140+numWav*2-1;
-motion1(freqInd) = average(freqInd);
-motion2(freqInd) = average(freqInd);
+% if strcmp(bewegung,'Hampelmann')
+%     freqInd = 140+numWav*2-1;
+% else
+%     freqInd = [141,142];
+% end
 
-if numWav == 1
-    [p0_0,eigenpostures0,sinVal0] = getHampelmannParameters(motion1');
-    [p0_5,eigenpostures5,sinVal5] = getHampelmannParameters(motion2');
-else
-    if numWav == 2
-        [p0_0,eigenpostures0,sinVal0] = getHampelmannParameters2(motion1');
-        [p0_5,eigenpostures5,sinVal5] = getHampelmannParameters2(motion2');
+% motion1(freqInd) = average(freqInd);
+% motion2(freqInd) = average(freqInd);
+
+if strcmp(bewegung,'Hampelmann')
+    if numWav == 1
+        [p0_0,eigenpostures0,sinVal0] = getHampelmannParameters(motion1');
+        [p0_5,eigenpostures5,sinVal5] = getHampelmannParameters(motion2');
     else
-        [p0_0,eigenpostures0,sinVal0] = getHampelmannParameters2_1(motion1');
-        [p0_5,eigenpostures5,sinVal5] = getHampelmannParameters2_1(motion2');
+        if numWav == 2
+            [p0_0,eigenpostures0,sinVal0] = getHampelmannParameters2(motion1');
+            [p0_5,eigenpostures5,sinVal5] = getHampelmannParameters2(motion2');
+        else
+            [p0_0,eigenpostures0,sinVal0] = getHampelmannParameters2_1(motion1');
+            [p0_5,eigenpostures5,sinVal5] = getHampelmannParameters2_1(motion2');
+        end
     end
+else
+    [p0_0,eigenpostures0,sinVal0] = getSeilhuepfenParameters(motion1');
+    [p0_5,eigenpostures5,sinVal5] = getSeilhuepfenParameters(motion2');
 end
 
 numFrames = 700;

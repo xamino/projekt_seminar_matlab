@@ -3,7 +3,7 @@
 clear;
 clc;
 
-bewegung = 'Hampelmann';
+bewegung = 'Seilhuepfen';
 
 startFactor = 0;
 endFactor = 1;
@@ -17,6 +17,10 @@ numWav = 1.5;
 % 1.5 soll hierbei bedeuten, dass bei den Koeffizienten des ersten
 % Eigenvektors 2 Sinuswellen benutzt werden, bei denen des zweiten jedoch
 % nur eine
+
+if strcmp(bewegung,'Seilhuepfen')
+    numWav = 1;
+end
 
 if numWav == 2
     numW = '2Sin';
@@ -109,6 +113,8 @@ for n = 1:2
                                     motionVector = createHampelmannVector2_1(p0,COEFF,val);
                                 end
                             end
+                        else
+                            motionVector = createSeilhuepfenVector(p0,COEFF,val);
                         end
 
                         dlmwrite([name '/' name int2str(g) numW norm 'MotionVectorCalc.txt'],motionVector);

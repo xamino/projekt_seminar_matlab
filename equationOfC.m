@@ -3,7 +3,7 @@ clc;
 
 % M = dlmread('AllMotionVectorCollcted.txt');
 
-bewegung = 'Hampelmann';
+bewegung = 'Seilhuepfen';
 % norm = 'MovedToZeroSizeNormalized';
 norm = 'MovedToZero';
 
@@ -24,6 +24,7 @@ averageMotionVector = mean(M(:,2:end));
 dlmwrite(['classifier' bewegung norm '.txt'],c(1:indMin));
 dlmwrite(['eigenVectors' bewegung norm '.txt'],V(:,1:indMin)); %V hat Eigenvektoren in jeder Spalte
 dlmwrite(['uVector' bewegung norm '.txt'],u);
+dlmwrite(['averageMotionVector' bewegung norm '.txt'],averageMotionVector);
 
 
 hold all;
