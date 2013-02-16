@@ -3,9 +3,9 @@
 clear;
 clc;
 
-name = 'chekib';
+name = 'jonas';
 gewicht = '0';
-bewegung = 'Seilhuepfen';
+bewegung = 'Hampelmann';
 norm = 'MovedToZero';
 % norm = 'MovedToZeroSizeNormalized';
 
@@ -41,7 +41,7 @@ M = M(end*startFactor+1:end*endFactor,:); % Weglassen von Frames
 %numComp ist die Anzahl der Dimensionen der Vektoren, die eine einzelne Pose beschreiben
 %numFrames ist die Anzahl der Posen/Frames aus den Testdaten
 
-numEigenvectors = 3;
+numEigenvectors = 2;
 % Anzahl der Eigenvektoren, die verwendet werden sollen
 % Definitionsbereich = {1,...,numComp}
  
@@ -107,6 +107,7 @@ end
 
 eigenwerte(LATENT,name,pfad);
 koeffizienten(SCORE,resultScore,name,pfad,numWav,numFrames);
+koeffizienten2D(SCORE,name,pfad);
 animate(name,pfad,M,Zwischenergebnis,Ergebnis,numEigenvectors,numWav);
 
 % end

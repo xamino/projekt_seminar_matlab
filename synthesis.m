@@ -5,7 +5,7 @@ bewegung = 'Hampelmann';
 % norm = 'MovedToZeroSizeNormalized';
 norm = 'MovedToZero';
 
-numWav = 2;
+numWav = 1.5;
 
 if strcmp(bewegung,'Seilhuepfen')
     numWav = 1;
@@ -27,10 +27,10 @@ V = dlmread(['eigenVectors' bewegung numW norm '.txt']);
 average = dlmread(['averageMotionVector' bewegung numW norm '.txt']);
 u = dlmread(['uVector' bewegung numW norm '.txt']);
 
-alpha = 70;
+alpha = 50;
 
-motion1 = average' + diag(alpha*u)*V*c;
-motion2 = average' + diag(-alpha*u)*V*c;
+motion1 = average' + (alpha*u').*(V*c);
+motion2 = average' + (-alpha*u').*(V*c);
 
 % frequenz bei beiden gleich setzen
 % if strcmp(bewegung,'Hampelmann')
@@ -87,33 +87,33 @@ P0_5 = ones(numFrames,1)*p0_5;
 motion0 = P0_0 + resultScore0*eigenpostures0';
 motion5 = P0_5 + resultScore5*eigenpostures5';
 
-m = motion0;
-for i=1:numFrames
-   xDiff=0-m(i,25);
-   zDiff=0-m(i,27);
-   for j=1:3:48
-        if j ~= 28
-            % Sämtliche weiteren Werte des Frames werden angepasst
-            m(i,j)=m(i,j)+xDiff;
-            m(i,j+2)=m(i,j+2)+zDiff;
-        end
-   end
-end
-motion0 = m;
-
-m = motion5;
-for i=1:numFrames
-   xDiff=0-m(i,25);
-   zDiff=0-m(i,27);
-   for j=1:3:48
-        if j ~= 28
-            % Sämtliche weiteren Werte des Frames werden angepasst
-            m(i,j)=m(i,j)+xDiff;
-            m(i,j+2)=m(i,j+2)+zDiff;
-        end
-   end
-end
-motion5 = m;
+% m = motion0;
+% for i=1:numFrames
+%    xDiff=0-m(i,25);
+%    zDiff=0-m(i,27);
+%    for j=1:3:48
+%         if j ~= 28
+%             % Sämtliche weiteren Werte des Frames werden angepasst
+%             m(i,j)=m(i,j)+xDiff;
+%             m(i,j+2)=m(i,j+2)+zDiff;
+%         end
+%    end
+% end
+% motion0 = m;
+% 
+% m = motion5;
+% for i=1:numFrames
+%    xDiff=0-m(i,25);
+%    zDiff=0-m(i,27);
+%    for j=1:3:48
+%         if j ~= 28
+%             % Sämtliche weiteren Werte des Frames werden angepasst
+%             m(i,j)=m(i,j)+xDiff;
+%             m(i,j+2)=m(i,j+2)+zDiff;
+%         end
+%    end
+% end
+% motion5 = m;
 
 
 for j=1:numFrames

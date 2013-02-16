@@ -9,7 +9,7 @@ norm = 'MovedToZero';
 
 M = dlmread(['AllMotionVectors' bewegung norm '.txt']);
 
-% M = M(7:24,:);
+% M = M(1:30,:);
 
 [numVect, numComp]= size(M(:,2:end));
 averageMotionVector = mean(M(:,2:end));
@@ -17,15 +17,17 @@ averageMotionVector = mean(M(:,2:end));
 [misclassificationsCompleteData,c,V,u] = classifyAll(M);
 
 [misclassificationsMit,misclassificationsOhne,classifications] = takeOneAndClassify(M);
-% [misclassificationsMit2,misclassificationsOhne2] = takeTwoAndClassify(M);
+%[misclassificationsMit2,misclassificationsOhne2] = takeTwoAndClassify(M);
 
 [m,indMin] = min(misclassificationsMit+misclassificationsOhne);
 
-dlmwrite(['classifier' bewegung norm '.txt'],c(1:indMin));
-dlmwrite(['eigenVectors' bewegung norm '.txt'],V(:,1:indMin)); %V hat Eigenvektoren in jeder Spalte
+c = c(1:indMin);
+V = V(:,1:indMin);
+
+dlmwrite(['classifier' bewegung norm '.txt'],c);
+dlmwrite(['eigenVectors' bewegung norm '.txt'],V); %V hat Eigenvektoren in jeder Spalte
 dlmwrite(['uVector' bewegung norm '.txt'],u);
 dlmwrite(['averageMotionVector' bewegung norm '.txt'],averageMotionVector);
-
 
 hold all;
 grid on;
